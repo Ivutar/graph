@@ -5,14 +5,18 @@ namespace graph;
 public partial class Form1 : Form
 {
     Image fish;
+    Bitmap buffer;
+    Graphics back;
     List<Swimmer> swimmerList;
 
     public Form1()
     {
         InitializeComponent();
+        buffer = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+        back = Graphics.FromImage(buffer);
         fish = Image.FromFile("fish.png");
         swimmerList = new List<Swimmer>();
-        for (int i = 0; i < 42; i++)
+        for (int i = 0; i < 1000; i++)
             AddFish();
     }
 
@@ -30,9 +34,7 @@ public partial class Form1 : Form
 
     private void timer1_Tick(object sender, EventArgs e)
     {
-        using var g = pictureBox1.CreateGraphics();
-        g.FillRectangle(Brushes.NavajoWhite, 0, 0, pictureBox1.Width, pictureBox1.Height);
-       
+        back.FillRectangle(Brushes.NavajoWhite, 0, 0, pictureBox1.Width, pictureBox1.Height);     
         foreach(var s in swimmerList)
         {
             var nx = s.x + s.dx;
@@ -42,8 +44,10 @@ public partial class Form1 : Form
 
             s.x += s.dx;
             s.y += s.dy;
-            g.DrawImage(fish, s.x, s.y);
+            back.DrawImage(fish, s.x, s.y);
         }
-               
+
+        using var g = pictureBox1.CreateGraphics();
+        g.DrawImage(buffer, 0, 0);
     }
 }
